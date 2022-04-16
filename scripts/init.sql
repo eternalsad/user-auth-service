@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS users (
+    id BIGSERIAL PRIMARY KEY,
+    email VARCHAR(128),
+    public_id VARCHAR(128)
+);

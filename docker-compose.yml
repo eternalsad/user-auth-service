@@ -1,0 +1,36 @@
+version: '3'
+services:
+  user-auth-app:
+    build:
+      context: ./
+      dockerfile: build/Dockerfile
+    restart: always
+    command: sh -c "sleep 10"
+    depends_on: 
+      - db 
+    networks:
+      - user-auth
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./config/config.yml:/app/config.yml:ro
+      - ./schema-registry:/app/schema-registry:ro
+    environment:
+      - APP_MODE=dev
+  db:
+    image: postgres
+    environment:
+        POSTGRES_DB: postgres
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: postgres
+        PGDATA: "/var/lib/postgresql/data/pgdata"
+    ports:
+        - "5432:5432"
+    volumes: 
+        - ./scripts/init.sql:/docker-entrypoint-initdb.d/1-init.sql
+    networks:
+      - user-auth
+
+networks:
+  user-auth:
+    driver: bridge
